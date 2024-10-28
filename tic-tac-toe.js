@@ -35,34 +35,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Loops through each game square to add the 'square' class
   gameSquares.forEach(function (square, index) {
-    // Adding the 'square' using setAttribute
-    square.setAttribute("class", "square");
+    square.setAttribute("class", "square"); // Adding the 'square' using setAttribute
 
-    // Exercise 2 - Placing 'X' or 'O' on a clicked square, alternating players, and updating the board status
+    // Exercise 2 - Placing 'X' or 'O' on a clicked square
 
     square.addEventListener("click", function () {
-      // Ensuring that the player can only add their mark if the square is empty
+      // Prevents Cheating (Exercise 6)
       if (!square.textContent) {
         // Adds X or O when the square is clicked
         square.textContent = player;
         square.setAttribute("class", `square ${player}`);
 
-        // Updating the boardStatus array
         boardStatus[index] = player;
 
-        // Checsk if there is a game winner
+        // Checks if there is a game winner
         const gameWinner = checkGameWinner();
         if (gameWinner) {
-          // Updates the status div with the game winner message
           gameStatus.textContent = `Congratulations! ${player} is the Winner!`;
           gameStatus.classList.add("you-won");
 
-          // Prevents further moves after a winner is found
+          // Prevents further moves after there is a winner
           gameSquares.forEach(function (sq) {
             sq.style.pointerEvents = "none";
           });
         } else {
-          // Switching between players if no winner
           player = player === "X" ? "O" : "X";
         }
       }
@@ -71,14 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Exercise 3 - Applying a hover style over an empty square
 
     square.addEventListener("mouseenter", function () {
-      // Applies the hover effect only if the square is empty
       if (!square.textContent) {
         square.classList.add("hover");
       }
     });
 
     square.addEventListener("mouseleave", function () {
-      // Remove the hover effect when the mouse is not over the empty square
       square.classList.remove("hover");
     });
   });
@@ -86,21 +80,17 @@ document.addEventListener("DOMContentLoaded", function () {
   // Exercise 5 - Reseting the game when the "New Game" button is clicked
 
   newGameButton.addEventListener("click", function () {
-    // Clearing the board squares
     gameSquares.forEach(function (square) {
       square.textContent = "";
       square.setAttribute("class", "square");
       square.style.pointerEvents = "";
     });
 
-    // Reseting the board to being empty
-    boardStatus.fill(null);
+    boardStatus.fill(null); // Reseting the board to being empty
 
-    // Reset the status message to the original message in the HTML file
     gameStatus.textContent = origStatMessage;
     gameStatus.classList.remove("you-won");
 
-    // Allowing player X to start the game again
     player = "X";
   });
 });
