@@ -2,8 +2,36 @@ document.addEventListener("DOMContentLoaded", function () {
   const gameSquares = document.querySelectorAll("#board div");
   let player = "X";
   let boardStatus = Array(9).fill(null); // Initializing an empty array
+  const statusDiv = document.getElementById("status"); // Updates the status message
 
-  // Loop through each game square to add the 'square' class
+  // Naming all the possible combinations
+  const winCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  //checkGameWinner is a function that checks who the winner of the tic-tac-toe game is
+  function checkGameWinner() {
+    for (let i = 0; i < winCombinations.length; i++) {
+      const [a, b, c] = winCombinations[i];
+      if (
+        boardStatus[a] &&
+        boardStatus[a] === boardStatus[b] &&
+        boardStatus[a] === boardStatus[c]
+      ) {
+        return boardStatus[a];
+      }
+    }
+    return null;
+  }
+
+  // Loops through each game square to add the 'square' class
   gameSquares.forEach(function (square, index) {
     // Adding the 'square' using setAttribute
     square.setAttribute("class", "square");
@@ -19,21 +47,34 @@ document.addEventListener("DOMContentLoaded", function () {
         // Updating the boardStatus array
         boardStatus[index] = player;
 
-        // Switching between players
-        player = player === "X" ? "O" : "X";
+        // Checsk if there is a game winner
+        const gameWinner = checkGameWinner();
+        if (gameWinner) {
+          // Updates the status div with the game winner message
+          statusDiv.textContent = `Congratulations! ${player} is the Winner!`;
+          statusDiv.classList.add("you-won");
+
+          // Prevents further moves after a winner is found
+          gameSquares.forEach(function (sq) {
+            sq.style.pointerEvents = "none";
+          });
+        } else {
+          // Switching between players if no winner
+          player = player === "X" ? "O" : "X";
+        }
       }
     });
 
     // Exercise 3 - Applying a hover style over an empty square
     square.addEventListener("mouseenter", function () {
-      //  Applies the hover effect only if the square is empty
+      // Applies the hover effect only if the square is empty
       if (!square.textContent) {
         square.classList.add("hover");
       }
     });
 
     square.addEventListener("mouseleave", function () {
-      // Remove the hover effect when the mouse isnot over the empty square
+      // Remove the hover effect when the mouse is not over the empty square
       square.classList.remove("hover");
     });
   });
